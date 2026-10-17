@@ -1,0 +1,165 @@
+@import url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Inter:wght@300;400;500;600&display=swap");
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: oklch(0.985 0.003 240);
+  --color-foreground: oklch(0.18 0.015 240);
+  --color-card: oklch(1 0 0);
+  --color-card-foreground: oklch(0.18 0.015 240);
+  --color-popover: oklch(1 0 0);
+  --color-popover-foreground: oklch(0.18 0.015 240);
+  --color-primary: oklch(0.32 0.04 240);
+  --color-primary-foreground: oklch(0.98 0.003 240);
+  --color-secondary: oklch(0.94 0.008 240);
+  --color-secondary-foreground: oklch(0.28 0.025 240);
+  --color-muted: oklch(0.94 0.006 240);
+  --color-muted-foreground: oklch(0.52 0.02 240);
+  --color-accent: oklch(0.88 0.025 55);
+  --color-accent-foreground: oklch(0.25 0.04 55);
+  --color-destructive: oklch(0.55 0.2 25);
+  --color-destructive-foreground: oklch(0.98 0.003 240);
+  --color-border: oklch(0.88 0.008 240);
+  --color-input: oklch(0.88 0.008 240);
+  --color-ring: oklch(0.32 0.04 240);
+
+  /* Gold accent for premium feel */
+  --color-gold: oklch(0.72 0.12 75);
+  --color-gold-light: oklch(0.88 0.07 75);
+  --color-gold-dark: oklch(0.52 0.1 65);
+
+  --radius-sm: 0.25rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+  --radius: 0.5rem;
+
+  --font-sans: "Inter", system-ui, sans-serif;
+  --font-serif: "Cormorant Garamond", Georgia, serif;
+
+  --shadow-sm: 0 1px 2px 0 oklch(0 0 0 / 0.04);
+  --shadow: 0 1px 3px 0 oklch(0 0 0 / 0.06), 0 1px 2px -1px oklch(0 0 0 / 0.04);
+  --shadow-md: 0 4px 6px -1px oklch(0 0 0 / 0.06), 0 2px 4px -2px oklch(0 0 0 / 0.04);
+  --shadow-lg: 0 10px 15px -3px oklch(0 0 0 / 0.06), 0 4px 6px -4px oklch(0 0 0 / 0.04);
+  --shadow-xl: 0 20px 25px -5px oklch(0 0 0 / 0.08), 0 8px 10px -6px oklch(0 0 0 / 0.04);
+}
+
+@layer base {
+  * {
+    @apply border-border;
+    box-sizing: border-box;
+  }
+
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans;
+    font-feature-settings: "kern" 1, "liga" 1, "calt" 1;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-serif);
+    font-weight: 400;
+    letter-spacing: -0.01em;
+    line-height: 1.2;
+  }
+
+  h1 { font-size: clamp(2rem, 5vw, 3.5rem); }
+  h2 { font-size: clamp(1.5rem, 3vw, 2.25rem); }
+  h3 { font-size: clamp(1.25rem, 2.5vw, 1.75rem); }
+
+  p { line-height: 1.7; }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: oklch(0.78 0.01 240); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: oklch(0.62 0.015 240); }
+}
+
+@layer utilities {
+  .font-serif { font-family: var(--font-serif); }
+  .font-sans { font-family: var(--font-sans); }
+
+  .text-gold { color: var(--color-gold); }
+  .bg-gold { background-color: var(--color-gold); }
+  .border-gold { border-color: var(--color-gold); }
+
+  /* Premium card style */
+  .card-premium {
+    background: var(--color-card);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+  }
+
+  /* Subtle divider */
+  .divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--color-border), transparent);
+  }
+
+  /* Animate in */
+  .animate-fade-up {
+    animation: fadeUp 0.4s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+    opacity: 1;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .animate-fade-in {
+    animation: fadeIn 0.3s cubic-bezier(0.23, 1, 0.32, 1) both;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  /* Source badge colors */
+  .source-airbnb { background: oklch(0.92 0.06 15); color: oklch(0.45 0.18 15); }
+  .source-vrbo { background: oklch(0.9 0.06 240); color: oklch(0.35 0.15 240); }
+  .source-booking_com { background: oklch(0.88 0.06 250); color: oklch(0.3 0.18 250); }
+  .source-direct { background: oklch(0.9 0.04 145); color: oklch(0.35 0.12 145); }
+  .source-manual { background: oklch(0.92 0.02 240); color: oklch(0.4 0.04 240); }
+
+  /* Status colors */
+  .status-pending { background: oklch(0.94 0.06 80); color: oklch(0.45 0.14 70); }
+  .status-confirmed { background: oklch(0.9 0.06 145); color: oklch(0.35 0.14 145); }
+  .status-checked_in { background: oklch(0.88 0.08 240); color: oklch(0.3 0.16 240); }
+  .status-checked_out { background: oklch(0.92 0.02 240); color: oklch(0.4 0.04 240); }
+  .status-cancelled { background: oklch(0.92 0.04 25); color: oklch(0.45 0.12 25); }
+}
+
+/* Prose styles for guest portal markdown */
+.prose-rental {
+  color: var(--color-foreground);
+  max-width: none;
+}
+.prose-rental h1,
+.prose-rental h2,
+.prose-rental h3 {
+  font-family: var(--font-serif);
+  font-weight: 400;
+  color: var(--color-foreground);
+  margin-top: 1.5em;
+  margin-bottom: 0.5em;
+}
+.prose-rental h1 { font-size: 1.875rem; }
+.prose-rental h2 { font-size: 1.375rem; border-bottom: 1px solid var(--color-border); padding-bottom: 0.4em; }
+.prose-rental h3 { font-size: 1.125rem; }
+.prose-rental p { margin-bottom: 1em; line-height: 1.75; }
+.prose-rental ul, .prose-rental ol { padding-left: 1.5em; margin-bottom: 1em; }
+.prose-rental li { margin-bottom: 0.35em; line-height: 1.65; }
+.prose-rental strong { font-weight: 600; }
+.prose-rental a { color: var(--color-primary); text-decoration: underline; text-underline-offset: 2px; }
+.prose-rental code { background: var(--color-muted); padding: 0.15em 0.4em; border-radius: 3px; font-size: 0.875em; }

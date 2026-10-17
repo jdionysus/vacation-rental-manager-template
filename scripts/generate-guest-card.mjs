@@ -1,0 +1,17 @@
+import PDFDocument from "pdfkit";
+import QRCode from "qrcode";
+import { createWriteStream, mkdir } from "node:fs";
+import path from "node:path";
+
+const output = path.resolve(process.env.GUEST_CARD_OUTPUT ?? "server/print-assets/guest_card_2up.pdf");
+const propertyName = process.env.PROPERTY_NAME ?? "Vacation Rental";
+const portalUrl = process.env.PUBLIC_APP_URL ? `${process.env.PUBLIC_APP_URL.replace(/\/$/, "")}/guest` : "https://example.com/guest";
+const wifiNetwork = process.env.GUEST_WIFI_NETWORK ?? "YOUR_WIFI_NETWORK";
+const wifiPassword = process.env.GUEST_WIFI_PASSWORD ?? "";
+const wifiPayload = `WIFI:T:WPA;S:${wifiNetwork};${wifiPassword ? `P:${wifiPassword};` : ""};`;
+await mkdir(path.dirname(output), { recursive: true });
+const [portalQr, wifiQr] = await Promise.all([QRCode.toBuffer(portalUrl, { errorCorrectionLevel: "M", margin: 1, width: 280 }), QRCode.toBuffer(wifiPayload, { errorCorrectionLevel: "M", margin: 1, width: 280 })]);
+const [width, height] = [792, 612], cardWidth = width / 2;
+const doc = new PDFDocument({ size: [width, height], margin: 0 }); doc.pipe(createWriteStream(output)); doc.rect(0, 0, width, height).fill("#faf8f4"); doc.moveTo(cardWidth, 24).lineTo(cardWidth, height - 24).dash(4, { space: 4 }).strokeColor("#b8a99a").lineWidth(0.8).stroke().undash();
+function drawCard(offsetX) { const size = 112, leftX = offsetX + 47, rightX = offsetX + cardWidth - 47 - size, qrY = 119; doc.font("Times-Bold").fontSize(22).fillColor("#1a1a1a").text(propertyName.toUpperCase(), offsetX + 30, 34, { width: cardWidth - 60, align: "center", characterSpacing: 1.5 }); doc.font("Times-Italic").fontSize(11).fillColor("#71655d").text("Guest Information", offsetX + 30, 64, { width: cardWidth - 60, align: "center" }); doc.font("Helvetica-Bold").fontSize(10).fillColor("#1a1a1a").text("WI-FI", leftX - 6, 98, { width: size + 12, align: "center", characterSpacing: 1 }).text("GUEST GUIDE", rightX - 6, 98, { width: size + 12, align: "center", characterSpacing: 1 }); doc.image(wifiQr, leftX, qrY, { width: size, height: size }).image(portalQr, rightX, qrY, { width: size, height: size }); doc.font("Helvetica").fontSize(8.5).fillColor("#4f4843").text("Scan to connect", leftX - 12, qrY + size + 8, { width: size + 24, align: "center" }).text("Scan, then enter your access code", rightX - 12, qrY + size + 8, { width: size + 24, align: "center" }); doc.font("Helvetica-Bold").fontSize(8.5).fillColor("#1a1a1a").text("WI-FI NETWORK", offsetX + 36, 284, { width: cardWidth - 72, align: "center", characterSpacing: 0.7 }); doc.font("Helvetica").fontSize(11).fillColor("#1a1a1a").text(wifiNetwork, offsetX + 36, 299, { width: cardWidth - 72, align: "center" }); doc.font("Times-Italic").fontSize(9).fillColor("#71655d").text(wifiPassword ? "Password required" : "No password required", offsetX + 36, 315, { width: cardWidth - 72, align: "center" }); doc.font("Helvetica").fontSize(9.5).fillColor("#4f4843").text("Use the guest-guide QR code, then enter the access code from your welcome message.", offsetX + 48, 385, { width: cardWidth - 96, align: "center", lineGap: 2 }); doc.font("Times-Italic").fontSize(10).fillColor("#71655d").text("Please enjoy your stay.", offsetX + 36, 479, { width: cardWidth - 72, align: "center" }); }
+drawCard(0); drawCard(cardWidth); doc.font("Helvetica").fontSize(7.5).fillColor("#9d8f85").text("Print landscape at actual size; cut along the center guide.", 20, height - 26, { width: width - 40, align: "center" }); doc.end();
