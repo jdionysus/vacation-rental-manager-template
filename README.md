@@ -32,13 +32,7 @@ and encrypted hosting settings.
 
 Replace `MY-RENTAL-MANAGER` with a name you like. Manus should give you a new private repository URL when it is finished.
 
-### 3. Let DigitalOcean access the private repository
-
-DigitalOcean needs permission to read the private GitHub copy before it can deploy it. In DigitalOcean, open [Apps](https://cloud.digitalocean.com/apps), choose **Create App**, select **GitHub** as the source, and authorize DigitalOcean to see your new repository. You can stop before creating the app if you want Manus to do the actual deployment.
-
-This is a one-time authorization between **your own GitHub and DigitalOcean accounts**. A DigitalOcean token cannot by itself grant DigitalOcean access to a private GitHub repository. DigitalOcean’s [Create App guide](https://docs.digitalocean.com/products/app-platform/how-to/create-apps/) explains this screen.
-
-### 4. Create a short-lived DigitalOcean token
+### 3. Create a short-lived DigitalOcean token
 
 1. In DigitalOcean, open **Account** → **API**, then select **Generate New Token**. The official [token guide](https://docs.digitalocean.com/reference/api/create-personal-access-token/) has screenshots.
 2. Name it something clear, such as `manus-rental-setup`, and give it an expiration date. It only needs to last through setup.
@@ -47,7 +41,7 @@ This is a one-time authorization between **your own GitHub and DigitalOcean acco
 
 Treat this token like a password. Give it to Manus only through a secure credential prompt or connector setup, not in a GitHub issue, commit, repository secret file, or public chat. Delete the token after setup if you do not need Manus to keep managing DigitalOcean.
 
-### 5. Ask Manus to create the app
+### 4. Ask Manus to create the app
 
 Open a Manus task, select your private repository, and paste the prompt below. Replace the repository name and region if needed.
 
@@ -55,6 +49,10 @@ Open a Manus task, select your private repository, and paste the prompt below. R
 Deploy my private GitHub repository MY-ACCOUNT/MY-RENTAL-MANAGER to
 DigitalOcean App Platform using the DigitalOcean token I will provide
 securely.
+
+During the DigitalOcean Create App flow, select GitHub as the source and
+authorize DigitalOcean to read this repository if it asks. The repository
+already contains the complete application; do not create an empty app first.
 
 Use one Node web service and a new managed MySQL database in the region
 closest to my guests. Keep the database and all property data private.
@@ -77,7 +75,9 @@ short list of what you configured.
 
 Manus should handle the technical deployment steps. DigitalOcean App Platform builds from a GitHub branch and can automatically redeploy when you push future changes. See DigitalOcean’s [App Platform overview](https://docs.digitalocean.com/products/app-platform/how-to/create-apps/).
 
-### 6. Add your property information
+DigitalOcean asks for GitHub access **at this app-creation step**, after your private repository already exists and contains the template code. A DigitalOcean token does not by itself grant access to a private GitHub repository.
+
+### 5. Add your property information
 
 When Manus gives you the live URL, open:
 
@@ -96,7 +96,7 @@ Sign in with the first host account created during deployment. Use the host dash
 
 Once the app is live, property details stay in the database. You should not need to edit code just to change your listing or guest information.
 
-### 7. Put Cloudflare in front of the live app
+### 6. Put Cloudflare in front of the live app
 
 Do this after the DigitalOcean URL works. Cloudflare gives you a custom domain, HTTPS at the edge, bot controls, and a firewall. It is optional for a test install, but strongly recommended before sharing a guest or staff portal.
 
